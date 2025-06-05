@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% block title %}Books{% endblock %}
+
+{% block content %}
+<div class="row">
+  <!-- Sidebar: Categories -->
+  <div class="col-md-3">
+    <h5 class="mb-3">Categories</h5>
+    <div class="list-group">
+      <a href="{% url 'book_list' %}" class="list-group-item list-group-item-action {% if not selected_category %}active{% endif %}">
+        All
+      </a>
+      {% for category in categories %}
+        <a href="{% url 'books_by_category' category.id %}?price_min={{ filters.price_min }}&price_max={{ filters.price_max }}&book_type={{ filters.book_type }}"
+           class="list-group-item list-group-item-action {% if selected_category and category.id == selected_category.id %}active{% endif %}">
+          {{ category.name }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="col-md-9">
+    <h2 class="mb-4">Books{% if selected_category %} in "{{ selected_category.name }}"{% endif %}</h2>
+
+<!--    <h2 class="mb-4">Books{% if selected_category %} in "{{ selected_category.name }}"{% endif %}</h2>-->
+
+<!-- 🔍 Search Bar -->
+<form class="d-flex mb-4" method="get" action="{{ request.path }}">
+  <input class="form-control me-2" type="search" name="search" value="{{ search_query }}" placeholder="Search by title or author..." aria-label="Search">
+  <button class="btn btn-outline-primary" type="submit">Search</button>
+</form>
+    <!-- Filters Form -->
+    <form method="get" action="{{ request.path }}" class="row g-3 mb-4 align-items-end">
+      <div class="col-sm-4">
+        <label class="form-label">Min Price</label>
+        <input type="number" class="form-control" name="price_min" value="{{ filters.price_min }}" placeholder="0">
+      </div>
+      <div class="col-sm-4">
+        <label class="form-label">Max Price</label>
+        <input type="number" class="form-control" name="price_max" value="{{ filters.price_max }}" placeholder="1000">
+      </div>
+      <div class="col-sm-4">
+        <label class="form-label">Book Type</label>
+        <select name="book_type" class="form-select">
+          <option value="all" {% if filters.book_type == 'all' %}selected{% endif %}>All</option>
+          <option value="sell" {% if filters.book_type == 'sell' %}selected{% endif %}>For Sale</option>
+          <option value="borrow" {% if filters.book_type == 'borrow' %}selected{% endif %}>For Borrow</option>
+          <option value="both" {% if filters.book_type == 'both' %}selected{% endif %}>For Both</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-primary">Apply Filters</button>
+      </div>
+    </form>
+
+    <!-- Book Cards -->
+    <div class="row row-cols-1 row-cols-md-2 g-4">
+      {% for book in books %}
+        <div class="col">
+          <div class="card h-100">
+            <img src="{{ book.image.url }}" class="card-img-top" alt="{{ book.title }}">
+            <div class="card-body">
+              <h5 class="card-title">{{ book.title }}</h5>
+              <p class="card-text mb-1"><strong>Author:</strong> {{ book.author }}</p>
+              <p class="card-text mb-1"><strong>Price:</strong> ${{ book.price }}</p>
+              <p class="card-text mb-3"><strong>Type:</strong> {{ book.get_book_type_display }}</p>
+              <a href="{% url 'book_detail' book.pk %}" class="btn btn-outline-primary btn-sm">View Details</a>
+            </div>
+          </div>
+        </div>
+      {% empty %}
+        <div class="col-12">
+          <div class="alert alert-warning" role="alert">
+            No books match the selected filters.
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+</div>
+{% endblock %}

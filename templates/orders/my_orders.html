@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block title %}My Orders{% endblock %}
+
+{% block content %}
+<h2 class="mb-4">My Orders</h2>
+
+{% if orders %}
+  <div class="table-responsive">
+    <table class="table table-bordered table-hover">
+      <thead class="table-light">
+        <tr>
+          <th>Book</th>
+          <th>Type</th>
+          <th>Quantity</th>
+          <th>Ordered On</th>
+          <th>Due Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for order in orders %}
+        <tr>
+          <td>{{ order.book.title }}</td>
+          <td>{{ order.get_order_type_display }}</td>
+          <td>{{ order.quantity }}</td>
+          <td>{{ order.created_at|date:"M d, Y" }}</td>
+          <td>
+            {% if order.order_type == 'borrow' %}
+              {{ order.due_date }}
+            {% else %}
+              &mdash;
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">
+    You haven’t ordered any books yet.
+  </div>
+{% endif %}
+{% endblock %}

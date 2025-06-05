@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2>Welcome to the Bookstore Platform!</h2>
+    <p>This is a sample page that extends the base template.</p>
+
+    <div class="card">
+        <h3>Your Profile Summary</h3>
+        {% if user.is_authenticated %}
+            <ul>
+                <li><strong>Username:</strong> {{ user.username }}</li>
+                <li><strong>Name:</strong> {{ user.first_name }} {{ user.last_name }}</li>
+                <li><strong>Email:</strong> {{ user.email }}</li>
+            </ul>
+        {% else %}
+            <p>You are not logged in. <a href="{% url 'login' %}">Login here</a>.</p>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <h3>Quick Actions</h3>
+        <ul>
+            <li><a href="{% url 'book_list' %}">Browse all books</a></li>
+            <li><a href="{% url 'my_orders' %}">View your orders</a></li>
+        </ul>
+    </div>
+</div>
+{% endblock %}

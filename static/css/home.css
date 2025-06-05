@@ -1,0 +1,12 @@
+.home-intro {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.home-btn {
+    background: #2c3e50;
+    color: white;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 6px;
+}
